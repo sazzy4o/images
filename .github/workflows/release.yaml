@@ -1,0 +1,28 @@
+name: Release Workflow
+on: [create]
+
+jobs:
+  release:
+    if: github.event_name == 'create' && github.event.ref_type == 'tag'
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install packages
+        run: sudo apt-get install -y qemu-utils lz4
+      - name: Download ubuntu
+        run: wget https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-disk-kvm.img
+      - name: Convert
+        run: qemu-img convert -p -f qcow2 -O raw jammy-server-cloudimg-amd64-disk-kvm.img jammy-server-cloudimg-amd64-disk-kvm.raw && rm jammy-server-cloudimg-amd64-disk-kvm.img
+      - name: Compress
+        run: lz4 -12 jammy-server-cloudimg-amd64-disk-kvm.raw && rm jammy-server-cloudimg-amd64-disk-kvm.raw
+      - name: Create release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "*.lz4"
+          tag: ${{ github.ref }}
+          name: ${{ github.ref }}
+          draft: true
