@@ -18,7 +18,7 @@ jobs:
       - name: Convert
         run: qemu-img convert -p -f qcow2 -O raw jammy-server-cloudimg-amd64-disk-kvm.img jammy-server-cloudimg-amd64-disk-kvm.raw && rm jammy-server-cloudimg-amd64-disk-kvm.img
       - name: Compress
-        run: lz4 -12 jammy-server-cloudimg-amd64-disk-kvm.raw && rm jammy-server-cloudimg-amd64-disk-kvm.raw
+        run: lz4 -12 jammy-server-cloudimg-amd64-disk-kvm.raw jammy-server-cloudimg-amd64-disk-kvm.raw.lz4 && rm jammy-server-cloudimg-amd64-disk-kvm.raw
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
