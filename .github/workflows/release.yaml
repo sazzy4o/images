@@ -15,7 +15,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install packages
-        run: sudo apt-get install -y qemu-utils lz4 mtools qemu-system-x86_64
+        run: sudo apt-get install -y qemu-utils lz4 mtools qemu-system
       - name: Check kvm
         run: kvm-ok
       - name: Download ubuntu
