@@ -23,7 +23,7 @@ jobs:
       - name: Download ubuntu
         run: wget https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
       - name: Resize image
-        run: qemu-img resize noble-server-cloudimg-amd64.img 10G
+        run: qemu-img resize noble-server-cloudimg-amd64.img 8G
       - name: Generate init image
         run: ./create-cloud-init.sh
       - name: Prepare image
