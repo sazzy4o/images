@@ -32,10 +32,12 @@ jobs:
         run: qemu-img convert -p -f qcow2 -O raw noble-server-cloudimg-amd64.img noble-server-cloudimg-amd64.raw && rm noble-server-cloudimg-amd64.img
       - name: Compress
         run: lz4 -12 noble-server-cloudimg-amd64.raw noble-server-cloudimg-amd64.lz4 && rm noble-server-cloudimg-amd64.raw
+      - name: Split
+        run: split -b 1G noble-server-cloudimg-amd64.lz4 noble-server-cloudimg-amd64.lz4.part
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "*.lz4"
+          artifacts: "noble-server-cloudimg-amd64.lz4.part*"
           tag: ${{ github.ref }}
           name: ${{ github.ref }}
           draft: true
