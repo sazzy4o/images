@@ -21,23 +21,23 @@ jobs:
       - name: Check kvm
         run: kvm-ok
       - name: Download ubuntu
-        run: wget https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
+        run: wget https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-disk-kvm.img -o ubuntu.img
       - name: Resize image
-        run: qemu-img resize noble-server-cloudimg-amd64.img 8G
+        run: qemu-img resize ubuntu.img 8G
       - name: Generate init image
         run: ./create-cloud-init.sh
       - name: Prepare image
-        run: qemu-system-x86_64 -enable-kvm -m 2048 -drive file=noble-server-cloudimg-amd64.img,media=disk,if=virtio -drive file=init.img,media=disk,if=virtio -cpu host -display none -serial mon:stdio -nic user,model=virtio-net-pci -smp 4
+        run: qemu-system-x86_64 -enable-kvm -m 4096 -drive file=ubuntu.img,media=disk,if=virtio -drive file=init.img,media=disk,if=virtio -cpu host -display none -serial mon:stdio -nic user,model=virtio-net-pci -smp 4
       - name: Convert
-        run: qemu-img convert -p -f qcow2 -O raw noble-server-cloudimg-amd64.img noble-server-cloudimg-amd64.raw && rm noble-server-cloudimg-amd64.img
+        run: qemu-img convert -p -f qcow2 -O raw ubuntu.img ubuntu.raw && rm ubuntu.img
       - name: Compress
-        run: lz4 -12 noble-server-cloudimg-amd64.raw noble-server-cloudimg-amd64.lz4 && rm noble-server-cloudimg-amd64.raw
+        run: lz4 -12 ubuntu.raw ubuntu.lz4 && rm ubuntu.raw
       - name: Split
-        run: split -b 1G noble-server-cloudimg-amd64.lz4 noble-server-cloudimg-amd64.lz4.part
+        run: split -b 1G ubuntu.lz4 jammy-server-cloudimg-amd64.lz4.part
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "noble-server-cloudimg-amd64.lz4.part*"
+          artifacts: "jammy-server-cloudimg-amd64.lz4.part*"
           tag: ${{ github.ref }}
           name: ${{ github.ref }}
           draft: true
