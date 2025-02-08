@@ -35,7 +35,7 @@ jobs:
       - name: Convert
         run: qemu-img convert -p -f qcow2 -O raw noble-server-cloudimg-amd64.img noble-server-cloudimg-amd64.raw && rm noble-server-cloudimg-amd64.img
       - name: Prepare image
-        run: ./bin/clh-net-wrapper "$PWD/cloud-hypervisor" --cpus boot=4 --console off --serial tty --memory size=8192M --kernel "$PWD/hypervisor-fw" "--disk" "path=$PWD/noble-server-cloudimg-amd64.raw" "path=$PWD/init.img" "--net" "fd=3,offload_tso=off,offload_ufo=off,offload_csum=off"
+        run: clh-net-wrapper "$PWD/cloud-hypervisor" --cpus boot=4 --console off --serial tty --memory size=8192M --kernel "$PWD/hypervisor-fw" "--disk" "path=$PWD/noble-server-cloudimg-amd64.raw" "path=$PWD/init.img" "--net" "fd=3,offload_tso=off,offload_ufo=off,offload_csum=off"
       - name: Compress
         run: lz4 -12 noble-server-cloudimg-amd64.raw noble-server-cloudimg-amd64.lz4 && rm noble-server-cloudimg-amd64.raw
       - name: Split
